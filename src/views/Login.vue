@@ -16,12 +16,13 @@
         <el-input v-model="loginForm.password"  prefix-icon="myicon myicon-key" type="password" placeholder="密码"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" class="login-btn">主要按钮</el-button>
+        <el-button type="primary" class="login-btn" @click="login">登录</el-button>
       </el-form-item>
     </el-form>
   </div>
 </template>
 <script>
+import {checkLogin} from '@/api'
 export default {
   data () {
     return {
@@ -29,6 +30,7 @@ export default {
         username: '',
         password: ''
       },
+      //定义校验规则
       loginRules: {
         username: [
           { required: true, message: '请输入用户名称', trigger: 'blur' },
@@ -37,6 +39,25 @@ export default {
           { required: true, message: '请输入用户名称', trigger: 'blur' },
         ]
       }
+    }
+  },
+  methods:{
+    login(){
+      console.log(111)
+      //在这里调用我们引入的登录checkLogin函数
+      checkLogin({username:this.loginForm.username,password:this.loginForm.password})
+        .then(res=>{
+          if(res.meta.status === 200){
+            //跳转到首页
+            this.$router.push({name:'Home'})
+          }else{
+            //提示错误信息
+            this.$message.ereror(res.meta.msg)
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
   }
 }
